@@ -15,10 +15,15 @@ def get_arm_joints(clientID,arm_name):
 
     return joints
 
-def set_arm_joints_position(clientID,arm_joints, config):
+def set_arm_joints_target_position(clientID,arm_joints, config):
     
     for i in range(len(arm_joints)):
        sim.simxSetJointTargetPosition(clientID, arm_joints[i], config[i], sim.simx_opmode_oneshot )
+
+def set_arm_joints_position(clientID,arm_joints, config):
+    
+    for i in range(len(arm_joints)):
+       sim.simxSetJointPosition(clientID, arm_joints[i], config[i], sim.simx_opmode_oneshot )
 
 
 def deg2grad(config):
