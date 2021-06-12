@@ -14,30 +14,43 @@ pr = PyRep()
 pr.launch(scene_path,headless=False) # Run COPSIM
 
 # Init Heroitea robot
-left_arm = arm.Arm(0, "UR3_left", 6)
-right_arm = arm.Arm(0, "UR3_right", 6)
-robot = Heroitea(left_arm,right_arm)
+heroitea = Heroitea()
 
-hand_cup = Object.get_object("Cup")
+# Create the cup object to meassure articulation status and get spawn point for particles
+hand_cup = Object.get_object("Cup") 
 spawn_particle_position = hand_cup.get_position()
 spawn_particle_position[2] += 0.01
-print(spawn_particle_position)
 
 pr.start()  # Start simulation
 
 # Move arm to train position
 train_arm_pose = [-70,-100,-30,45,45,10] 
 train_arm_pose = deg2grad(train_arm_pose)
-robot.left_arm.set_joint_target_positions(train_arm_pose)
+heroitea.left_arm.set_joint_target_positions(train_arm_pose)
 
 # Fill cup to pour liquid
+
+particles = [] # The list that holds all particles
+num_par = 10
 for i in range(1000):
     
-    if(i%2 == 0):
-        par_handle = spawn_liquid_particle(spawn_particle_position)
+    if(i%2 == 0 and len(particles) != num_par):
+        # Spawn each particle and add the object to the list
+        particles.append(spawn_liquid_particle(spawn_particle_position))
+    
+    if len(particles)>0:
+        for par in particles:
+            print(par.get_position())
+
+    if len(particles) == num_par:
+        break
+
     pr.step()
 
-
+# Agent episode 
+for i in range(150):
+    # Here we make the agent do stuff in each episode
+    pr.step()
 
 pr.stop()       # Stop simulation
 

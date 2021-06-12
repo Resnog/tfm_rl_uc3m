@@ -1,6 +1,6 @@
 import pyrep
 from pyrep.const import PrimitiveShape
-from pyrep.objects.shape import Shape
+from pyrep.objects.shape import Shape, Object
 import numpy as np 
 
 def move_arm(config):
@@ -35,9 +35,11 @@ def spawn_liquid_particle(cup_position):
                             color=[139,0,0], size=[0.01,0.01,0.01],
                             position=cup_position)
     
-    #particle.set_dynamic(True)
-    particle.set_mass(0.005)
-    #particle.set_collidable(True)
-    #particle.set_position([1,1,1])
+    particle.set_dynamic(True)                  # Make the particle dynamic
+    particle.set_mass(0.005)                    # Set the particle's mass
+    particle.set_collidable(True)               # Make the particle collidable so it can bounce     
+    #particle.set_name("par"+str(item_number))   # Set the particle's name
     
-    return particle
+
+    return particle # Return the particle object 
+
