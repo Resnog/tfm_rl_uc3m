@@ -28,3 +28,16 @@ def deg2grad(config):
         joint_positions.append(rad)
     
     return joint_positions
+
+def spawn_liquid_particle(cup_position):
+
+    particle = Shape.create(type=PrimitiveShape.SPHERE,
+                            color=[139,0,0], size=[0.01,0.01,0.01],
+                            position=cup_position)
+    
+    #particle.set_dynamic(True)
+    particle.set_mass(0.005)
+    #particle.set_collidable(True)
+    #particle.set_position([1,1,1])
+    
+    return particle
