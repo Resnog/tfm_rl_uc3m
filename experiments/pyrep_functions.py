@@ -32,7 +32,7 @@ def deg2grad(config):
 def spawn_liquid_particle(cup_position):
 
     particle = Shape.create(type=PrimitiveShape.SPHERE,
-                            color=[139,0,0], size=[0.01,0.01,0.01],
+                            color=[139,0,0], size=[0.015,0.015,0.015],
                             position=cup_position)
     
     particle.set_dynamic(True)                  # Make the particle dynamic
