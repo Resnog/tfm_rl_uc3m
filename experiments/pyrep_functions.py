@@ -6,18 +6,24 @@ import numpy as np
 def move_arm(config):
     pass    
 
-def fill_cup(num_obj, cup_position):
+def fill_cup(n_particles, spawn_position, pr):
 
-    shape_handles = []
+    particles = []
 
-    for n in range(num_obj):    
-        obj = Shape.create(type=PrimitiveShape.SPHERE,
-                            size=[0.01],
-                            color=[255,0,0],
-                            position=[cup_position[0],cup_position[1],cup_position[2]+0.5])
-        shape_handles.append(obj)
+    # Filling loop
+    for i in range(1000):
 
-    return shape_handles
+        if(i%2 == 0 and len(particles) != n_particles):
+            # Spawn each particle and add the object to the list
+            particles.append(spawn_liquid_particle(spawn_position))
+
+        if len(particles) == n_particles:
+            print(len(particles))
+            break
+
+        pr.step()
+
+    return particles
 
 def deg2grad(config):
     
