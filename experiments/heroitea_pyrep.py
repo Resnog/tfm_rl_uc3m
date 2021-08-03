@@ -21,11 +21,12 @@ heroitea = Heroitea()
 # Init Agent to control the robot
 
 agent_init = {
-    "n_states":180,     # For each degree the agent will have one state
+    "n_states":120,     # For each degree the agent will have one state
     "n_actions":3,      # The agent will only move right, left or not move at all
     "epsilon" : 0.015,
     "discount" : 0.01,
-    "step_size" : 0.015
+    "step_size" : 0.015,
+    "seed": None
 }
 """
     Since this is the start of the RL development on Heroitea, the agent will be name Romulus,
@@ -40,30 +41,18 @@ pr.start()  # Start simulation
 
 
 # Move arm to train position
-train_arm_pose = [-70,-100,-30,45,45,45] 
-train_arm_pose = deg2grad(train_arm_pose)
-heroitea.left_arm.set_joint_target_positions(train_arm_pose)
+heroitea.sef_train_position(pr)
 
-# Wait for arm to arrive to main position
-pr.step()
-vel = 0
-while True:
-    pr.step()
-    vel = np.linalg.norm( np.array(heroitea.left_arm.get_joint_velocities() ) ) 
-
-    if vel < 0.01:
-        break
-
-# Create the cup object to meassure articulation status and get spawn point for particles
+# Create the get spawn point for particles
 hand_cup = Object.get_object("Cup") 
-spawn_particle_position = hand_cup.get_position()
-spawn_particle_position[2] += 0.01
-
 # Fill cup to pour liquid
-
 particles = [] # The list that holds all particles
 n_particles = 100
-particles = fill_cup(n_particles, spawn_particle_position, pr)
+particles = fill_cup(hand_cup, n_particles, liquids, pr)
+
+# Init episode
+
+
 
 # Agent episode 
 for i in range(150):
@@ -71,10 +60,12 @@ for i in range(150):
     
     # 1.- Make observation of the environment
     # 2.- Take action based on observation
-    # 3.- Take step within simulator
-    # 4.- Update Q-table
-
+    heroitea.move_end_effector(2)
+    # 3.- Update Q-table
+    # 4.- Take step within simulator
     pr.step()
+
+
 
 pr.stop()       # Stop simulation
 
