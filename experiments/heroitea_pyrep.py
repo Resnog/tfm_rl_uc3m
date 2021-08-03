@@ -21,11 +21,12 @@ heroitea = Heroitea()
 # Init Agent to control the robot
 
 agent_init = {
-    "n_states":180,     # For each degree the agent will have one state
+    "n_states":120,     # For each degree the agent will have one state
     "n_actions":3,      # The agent will only move right, left or not move at all
     "epsilon" : 0.015,
     "discount" : 0.01,
-    "step_size" : 0.015
+    "step_size" : 0.015,
+    "seed": None
 }
 """
     Since this is the start of the RL development on Heroitea, the agent will be name Romulus,
@@ -37,6 +38,7 @@ romulus = agent(agent_init)
 
 
 pr.start()  # Start simulation
+
 
 # Move arm to train position
 train_arm_pose = [-70,-100,-30,45,45,45] 

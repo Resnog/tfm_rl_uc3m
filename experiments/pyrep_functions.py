@@ -6,6 +6,7 @@ import numpy as np
 def move_arm(config):
     pass    
 
+
 def fill_cup(n_particles, spawn_position, pr):
 
     particles = []
