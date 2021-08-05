@@ -7,23 +7,14 @@ class Heroitea(object):
         self.right_arm = arm.Arm(0, "UR3_right", 6, max_velocity=1)
         self.init_arm_pose = [-70,-100,-30,45,45,45]    
         self.train_arm_pose = self.init_arm_pose
-<<<<<<< HEAD
       
     def get_end_effector_state(self):
 
         # Get the current angle of the end effector and convert it to an int variable
         pose = np.rint(np.rad2deg( self.left_arm.get_joint_positions() ) )
-        return int(pose[5])
+        return int(pose[5]) - 15
 
     def set_train_position(self, pr):
-=======
-
-    def arm_setup(self):
-
-        print(self.left_arm.get_joint_target_velocities() )
-
-    def sef_train_position(self, pr):
->>>>>>> 4a5db28b1f83bfb03793935fb5121d0e8a28a4da
         """
         This method sets the arm into the initial position for training the 
         RL agent
@@ -57,11 +48,7 @@ class Heroitea(object):
         """        
         if(action == 1):
             # Add one degree to current end effector pose
-<<<<<<< HEAD
             self.train_arm_pose[5] -= 1
-=======
-            self.train_arm_pose[5] -= 1 
->>>>>>> 4a5db28b1f83bfb03793935fb5121d0e8a28a4da
             #Move clockwise
             self.left_arm.set_joint_target_positions(np.deg2rad(self.train_arm_pose))
         elif( action == 2):

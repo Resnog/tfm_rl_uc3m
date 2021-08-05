@@ -24,20 +24,13 @@ class agent():
         
         # Choose action using epsilon greedy.
         state = observation
-<<<<<<< HEAD
         current_q = self.q_values[state,:]
         print(current_q)
-=======
-        current_q = self.q[state,:]
->>>>>>> 4a5db28b1f83bfb03793935fb5121d0e8a28a4da
         # Random number selection
         if self.rand_generator.rand() < self.epsilon:
-            action = self.rand_generator.randint(self.num_actions)
+            action = self.rand_generator.randint(self.n_actions)
         else:
-<<<<<<< HEAD
             
-=======
->>>>>>> 4a5db28b1f83bfb03793935fb5121d0e8a28a4da
             action = self.argmax(current_q)
         
         self.prev_state = state
@@ -45,7 +38,6 @@ class agent():
         
         return action
     
-<<<<<<< HEAD
     def agent_step(self, reward, observation):
         """A step taken by the agent.
         Args:
@@ -61,7 +53,7 @@ class agent():
         state = observation
         current_q = self.q_values[state, :]
         if self.rand_generator.rand() < self.epsilon:
-            action = self.rand_generator.randint(self.num_actions)
+            action = self.rand_generator.randint(self.n_actions)
         else:
             action = self.argmax(current_q)
         
@@ -97,33 +89,18 @@ class agent():
         """argmax with random tie-breaking
         Args:
             q (Numpy array): the array of action-values
-=======
-    def argmax(self, q_values):
-        """argmax with random tie-breaking
-        Args:
-            q_values (Numpy array): the array of action-values
->>>>>>> 4a5db28b1f83bfb03793935fb5121d0e8a28a4da
         Returns:
             action (int): an action with the highest value
         """
         top = float("-inf")
         ties = []
 
-<<<<<<< HEAD
         for i in range(len(q)):
             if q[i] > top:
                 top = q[i]
                 ties = []
 
             if q[i] == top:
-=======
-        for i in range(len(q_values)):
-            if q_values[i] > top:
-                top = q_values[i]
-                ties = []
-
-            if q_values[i] == top:
->>>>>>> 4a5db28b1f83bfb03793935fb5121d0e8a28a4da
                 ties.append(i)
 
         return self.rand_generator.choice(ties)

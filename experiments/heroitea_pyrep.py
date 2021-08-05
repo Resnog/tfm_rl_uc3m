@@ -36,7 +36,6 @@ romulus = agent(agent_init)
 print(type(romulus.q_values))
 
 
-<<<<<<< HEAD
 
 pr.start()  # Start simulation
 
@@ -46,31 +45,21 @@ pr.start()  # Start simulation
 
 # Move arm to train position
 heroitea.set_train_position(pr)
-=======
-
-
-pr.start()  # Start simulation
-
-
-# Move arm to train position
-heroitea.sef_train_position(pr)
->>>>>>> 4a5db28b1f83bfb03793935fb5121d0e8a28a4da
 
 # Create the get spawn point for particles
 hand_cup = Object.get_object("Cup") 
 # Fill cup to pour liquid
 particles = [] # The list that holds all particles
-<<<<<<< HEAD
 n_particles = 20
 #particles = fill_cup(hand_cup, n_particles, small_solids, pr)
 
 
 # Make first observation of the environment
 state = heroitea.get_end_effector_state()
-print(state)
+# Agent select action
 action = romulus.agent_start(state) 
-print(action)  
-
+# Assing reward of -1 to push the agent for idleness
+reward = -1
 # ------------
 # Episode Loop
 # ------------
@@ -90,29 +79,11 @@ for i in range(200):
     # 3.- Check particle states   
 
     # 4.- Take action based on observation, updating Q(s,a) values
-    heroitea.move_end_effector(2)
+    action = romulus.agent_step(-1,state)
+    heroitea.move_end_effector(1)
 
     # 5.- Take step within simulator
-=======
-n_particles = 100
-particles = fill_cup(hand_cup, n_particles, liquids, pr)
-
-# Init episode
-
-
-
-# Agent episode 
-for i in range(150):
-    # Here we make the agent do stuff in each episode
-    
-    # 1.- Make observation of the environment
-    # 2.- Take action based on observation
-    heroitea.move_end_effector(2)
-    # 3.- Update Q-table
-    # 4.- Take step within simulator
->>>>>>> 4a5db28b1f83bfb03793935fb5121d0e8a28a4da
     pr.step()
-
 
 
 pr.stop()       # Stop simulation
