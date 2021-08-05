@@ -21,6 +21,7 @@ def fill_cup(hand_cup, n_particles, particle_type, pr):
             particles.append(spawn_liquid_particle(spawn_position, particle_type))
 
         if len(particles) == n_particles:
+<<<<<<< HEAD
             #print(len(particles))
             break
 
@@ -32,6 +33,19 @@ def spawn_liquid_particle(cup_position, p_tuple):
 
     particle = Shape.create(type=PrimitiveShape.SPHERE,
                             color=YELLOW, size=[p_tuple[1],p_tuple[1],p_tuple[1]],
+=======
+            print(len(particles))
+            break
+
+        pr.step()
+
+    return particles
+
+def spawn_liquid_particle(cup_position, p_tuple):
+
+    particle = Shape.create(type=PrimitiveShape.SPHERE,
+                            color=[139,0,0], size=[p_tuple[1],p_tuple[1],p_tuple[1]],
+>>>>>>> 4a5db28b1f83bfb03793935fb5121d0e8a28a4da
                             position=cup_position)
     
     particle.set_dynamic(True)                  # Make the particle dynamic
@@ -43,11 +57,14 @@ def spawn_liquid_particle(cup_position, p_tuple):
 
     return particle # Return the particle object 
 
+<<<<<<< HEAD
 # COLOR VARIABLES
 YELLOW = [255,255,0]
 GREEN = [0,139,0]
 RED = [139,0,0]
 
+=======
+>>>>>>> 4a5db28b1f83bfb03793935fb5121d0e8a28a4da
 # Mass and radious of every test particle
 # TUPLE = (MASS, RADIUS)
 liquids = (0.0045,0.008)
