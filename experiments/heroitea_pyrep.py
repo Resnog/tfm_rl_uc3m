@@ -6,6 +6,7 @@ from heroitea_robot import Heroitea
 from pyrep.robots.arms import arm
 from pyrep.backend import sim
 from pyrep.objects.shape import Shape, Object
+from pyrep.objects.proximity_sensor import ProximitySensor
 import numpy as np
 
 scene_path = "/home/resnog/myRepos/tfm_rl_uc3m/scenes/heroitea_pyrep.ttt"
@@ -21,7 +22,7 @@ heroitea = Heroitea()
 # Init Agent to control the robot
 
 agent_init = {
-    "n_states":120,     # For each degree the agent will have one state
+    "n_states":180,     # For each degree the agent will have one state
     "n_actions":3,      # The agent will only move right, left or not move at all
     "epsilon" : 0.015,
     "discount" : 0.01,
@@ -37,22 +38,26 @@ print(type(romulus.q_values))
 
 
 
-pr.start()  # Start simulation
-
 # ------------
 # Init episode
 # ------------
+pr.start()  # Start simulation
 
 # Move arm to train position
 heroitea.set_train_position(pr)
 
-# Create the get spawn point for particles
-hand_cup = Object.get_object("Cup") 
+# Get the effector cup object for particle location
+hand_cup = Object.get_object("hand_cup") 
+
+# Get the table cup object for particle state calculation
+table_cup = Object.get_object("table_cup")
+# Get the cup sensor
+cup_sensor = ProximitySensor("cup_sensor")
+
 # Fill cup to pour liquid
 particles = [] # The list that holds all particles
-n_particles = 20
-#particles = fill_cup(hand_cup, n_particles, small_solids, pr)
-
+n_particles = 100
+particles, par_visit = fill_cup(hand_cup, n_particles, big_solids, pr)
 
 # Make first observation of the environment
 state = heroitea.get_end_effector_state()
@@ -63,30 +68,34 @@ reward = -1
 # ------------
 # Episode Loop
 # ------------
-
-for i in range(200):
+for i in range(1000):
     # Here we make the agent do stuff in each episode
     
+
     # 1.- Make observation of the environment
     state = heroitea.get_end_effector_state()
+    print(state)
     # 2.- Check if state is terminal 
-    if state < 0 or state > 135:
+    if state < 0 or state > 180:
         # Give 100 penalty to the agent for going out of action range
         romulus.agent_end(-100)
         # Terminate episode if the end effector is outside of the action range
         break
 
-    # 3.- Check particle states   
+    # 3.- Reward calculations
+    # Check particle states   
+    check_particle_states(particles,hand_cup, cup_sensor)
+    # Calculate rewards
+    reward = calculate_rewards(particles, par_visit)
 
     # 4.- Take action based on observation, updating Q(s,a) values
-    action = romulus.agent_step(-1,state)
-    heroitea.move_end_effector(1)
+    action = romulus.agent_step(reward,state)
+    heroitea.move_end_effector(action)
 
     # 5.- Take step within simulator
     pr.step()
 
 
 pr.stop()       # Stop simulation
-
 
 pr.shutdown()   # Close COPSIM

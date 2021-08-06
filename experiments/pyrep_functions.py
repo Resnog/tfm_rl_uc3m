@@ -2,12 +2,13 @@ import os
 import pyrep
 from pyrep.const import PrimitiveShape
 from pyrep.objects.shape import Shape, Object
+from pyrep.objects.proximity_sensor import ProximitySensor
 import numpy as np 
 
 def fill_cup(hand_cup, n_particles, particle_type, pr):
 
     particles = []
-
+    par_visit = []
     # Filling loop
     for i in range(1000):
 
@@ -19,14 +20,14 @@ def fill_cup(hand_cup, n_particles, particle_type, pr):
 
             # Spawn each particle and add the object to the list
             particles.append(spawn_liquid_particle(spawn_position, particle_type))
-
+            par_visit.append(False)
         if len(particles) == n_particles:
             #print(len(particles))
             break
 
         pr.step()
 
-    return particles
+    return particles, par_visit
 
 def spawn_liquid_particle(cup_position, p_tuple):
 
@@ -38,13 +39,80 @@ def spawn_liquid_particle(cup_position, p_tuple):
     particle.set_mass(p_tuple[0])                    # Set the particle's mass
     particle.set_collidable(True)               # Make the particle collidable so it can bounce     
     #particle.set_name("par"+str(item_number))   # Set the particle's name
-    
-    
-
+    particle.get_color()
     return particle # Return the particle object 
 
+def check_particle_states(particles, hand_cup, cup_sensor):#table_cup):
+
+
+    hand_cup_position = hand_cup.get_position()
+    #table_cup_position = table_cup.get_position()
+
+    # Check distance between hand_cup and table_cup
+    for p in particles:
+        
+        p_position = p.get_position()
+
+        p_hand_dist = np.linalg.norm (p_position - hand_cup_position)
+        #p_table_dist = np.linalg.norm (p_position - table_cup_position)
+
+        # If within 9cm of the hand_cup effector
+        if cup_sensor.is_detected(p):
+            # Color GREEN
+            p.set_color(GREEN)
+        # If within 15cm of the hand_cup effector
+        elif p_hand_dist < 0.15:
+            # Color YELLOW
+            p.set_color(YELLOW)
+        # If neither 
+        else:
+            # Color RED
+            p.set_color(RED)
+        
+def calculate_rewards(particles, par_visit):
+    """
+    Check all particles to see if they are visited and if not, check status
+    (color) and return respective reward
+    """
+
+    # Standar reward for not getting particles into the glass
+    reward = 0
+    # Score
+    count = 0
+
+    # Iterate for each particle and particle visit state
+    for i in range(len(particles)):
+        
+        # If particle is not visited
+        if par_visit[i] == False:
+            
+            # If the particle is inside the glass
+            if particles[i].get_color() == GREEN:
+                # Give reward
+                reward += 10
+                # Set status of the particle as "visited"
+                par_visit[i] = True
+                count += 1
+            # If the particle is lost 
+            elif particles[i].get_color() == RED:
+                # Give penalty
+                reward -= 10
+                # Set status of the particle as "visited"
+                par_visit[i] = True
+                # Add particle to visited count
+                count += 1
+            # If the particle hasn't reached any state
+            else:
+                # DO NOTHING!
+                pass
+    
+    if count == 0:
+        reward = -1
+
+    return reward
+
 # COLOR VARIABLES
-YELLOW = [255,255,0]
+YELLOW = [205,205,0]
 GREEN = [0,139,0]
 RED = [139,0,0]
 
