@@ -34,7 +34,7 @@ as in the founder of Rome, the first Roman king of the Roman Kingdom, in the pre
 # Init training
 # ------------
 romulus = agent(agent_init) # Agent declaration
-n_episodes = 5            # Episode number
+n_episodes = 3            # Episode number
 episode_len = 500           # Episode length
 n_particles = 20            # Particle number
 particle_type = big_solids  # Particle type (liquids, small solids, big solids)
@@ -157,7 +157,7 @@ for episode in range(n_episodes):
 # Statistics and graphics
 # -----------------------
 
-plt.plot(n_episodes,reward_curve)
+plt.plot(reward_curve)
 plt.ylabel("Sumatoria de recompensas por episodio")
 plt.xlabel("Episodios")
 plt.savefig("reward_sum_curve.png")

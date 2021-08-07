@@ -25,7 +25,7 @@ class agent():
         # Choose action using epsilon greedy.
         state = observation
         current_q = self.q_values[state,:]
-        print(current_q)
+      
         # Random number selection
         if self.rand_generator.rand() < self.epsilon:
             action = self.rand_generator.randint(self.n_actions)
