@@ -105,12 +105,45 @@ def calculate_rewards(particles, par_visit):
             else:
                 # DO NOTHING!
                 pass
-    
+
     if count == 0:
         reward = -1
 
     return reward
 
+def check_particle_terminal(particles):
+
+    count = 0           # Count variable for different states than YELLOW
+    g_count = 0         # Green particles counter
+    terminal = False    # Terminal state bool
+    success = False     # Success state bool
+
+    # Main search loop
+    for p in particles:
+        # If the particle is either lost or reached their destination        
+        if p.get_color() != YELLOW:
+            count += 1
+        # If the particle is GREEN
+        elif p.get_color() == GREEN:
+            g_count += 1
+
+    # If all the particles are either lost or reached their destination 
+    if count == len(particles):
+        # Set terminal state
+        terminal = True
+        # Check if the count is equal to g_count
+        if count == g_count:
+            success = True
+
+    return terminal, success
+
+def print_episode_data(episode_number, streaks):
+
+    print("------------------------")
+    print("Episode number: {}".format(episode_number))
+    print("Streaks:        {}".format(streaks))
+    print("------------------------")
+    pass
 # COLOR VARIABLES
 YELLOW = [205,205,0]
 GREEN = [0,139,0]
