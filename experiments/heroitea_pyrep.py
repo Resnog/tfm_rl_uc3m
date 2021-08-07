@@ -81,14 +81,14 @@ for episode in range(n_episodes):
     streaks = 0                 
     # Max number of consecutive streaks
     max_streaks = 0
+    
     # ------------
     # Episode Loop
     # ------------
     # Each episode has 500 steps at 25ms the step, so 12.5s in total
     for i in range(episode_len): 
 
-        # Print episode data
-        print_episode_data(episode,streaks)
+
         # Here we make the agent do stuff in each episode
         # 1.- Make observation of the environment
         state = heroitea.get_end_effector_state()
@@ -137,6 +137,9 @@ for episode in range(n_episodes):
         pr.step()
     # Once the episode ends, stop simulation
     pr.stop()
+    
+    # Print episode data
+    print_episode_data(episode,max_streaks)
     # Add last episode reward sum to the reward curve
     reward_curve.append(reward_sum)
     # Add max number of streaks in episode to streak curve
@@ -154,7 +157,7 @@ for episode in range(n_episodes):
 # Statistics and graphics
 # -----------------------
 
-plt.plot(reward_curve,n_episodes)
+plt.plot(n_episodes,reward_curve)
 plt.ylabel("Sumatoria de recompensas por episodio")
 plt.xlabel("Episodios")
 plt.savefig("reward_sum_curve.png")
