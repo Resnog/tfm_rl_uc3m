@@ -109,7 +109,7 @@ for episode in range(n_episodes):
 
         # 4.- Take action based on observation, updating Q(s,a) values
         action = romulus.agent_step(reward,state)
-        heroitea.move_end_effector(2)
+        heroitea.move_end_effector(action)
 
         # 5.- Take step within simulator
         pr.step()
