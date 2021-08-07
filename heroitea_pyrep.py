@@ -8,7 +8,7 @@ from pyrep.backend import sim
 from pyrep.objects.shape import Shape, Object
 from pyrep.objects.proximity_sensor import ProximitySensor
 import numpy as np
-from matplotlib.pyplot import plot, plt
+from matplotlib.pyplot import plot
 
 # Init COPSIM
 scene_path = "/home/resnog/myRepos/tfm_rl_uc3m/scenes/heroitea_pyrep.ttt"
