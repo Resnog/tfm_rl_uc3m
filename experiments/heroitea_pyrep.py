@@ -1,4 +1,6 @@
+from experiments.agent import agent_ql
 from agent import agent
+from numpy.core.numeric import zeros_like
 from pyrep import PyRep
 from time import sleep
 from pyrep_functions import *
@@ -11,10 +13,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # Init COPSIM
-scene_path = "/home/resnog/myRepos/tfm_rl_uc3m/scenes/heroitea_pyrep.ttt"
+scene_path = "/home/greatceph/myRepos/tfm_rl_uc3m/scenes/heroitea_pyrep.ttt"
 pr = PyRep()                            
 pr.launch(scene_path,headless=False) # Run COPSIM
-
 
 # Init Agent to control the robot
 agent_init = {
@@ -33,13 +34,14 @@ as in the founder of Rome, the first Roman king of the Roman Kingdom, in the pre
 # ------------
 # Init training
 # ------------
-romulus = agent(agent_init) # Agent declaration
-n_episodes = 3            # Episode number
-episode_len = 500           # Episode length
-n_particles = 20            # Particle number
-particle_type = big_solids  # Particle type (liquids, small solids, big solids)
-reward_curve = []           # Curve to plot the reward per episode
-max_streak_curve = []        # Maximum number of streaks per episode
+romulus = agent_ql(agent_init) # Agent declaration
+n_episodes = 500            # Episode number
+episode_len = 1500           # Episode length
+n_particles = 500            # Particle number
+particle_type = liquids  # Particle type (liquids, small solids, big solids)
+reward_curve = np.zeros(n_episodes)           # Curve to plot the reward per episode
+max_streak_curve = np.zeros(n_episodes)       # Maximum number of streaks per episode
+p_reached_per_episode = np.zeros(n_episodes)  # Number of particles that reached the destination in each episode
 # -------------
 # Training loop
 # -------------
@@ -66,7 +68,6 @@ for episode in range(n_episodes):
 
     # Fill cup to pour liquid
     particles = [] # The list that holds all particles
-    n_particles = 20
     particles, par_visit = fill_cup(hand_cup, n_particles, particle_type, pr)
 
     # Make first observation of the environment
@@ -81,7 +82,8 @@ for episode in range(n_episodes):
     streaks = 0                 
     # Max number of consecutive streaks
     max_streaks = 0
-    
+    # Number of particles that reached the destination in the episode
+    p_in_goal = 0
     # ------------
     # Episode Loop
     # ------------
@@ -96,16 +98,14 @@ for episode in range(n_episodes):
         
         # Add past reward to reward_sum
         reward_sum += reward
-        # If within action range
-        if state < 0 or state > 180:
-            # Give 100 penalty to the agent for going out of action range
-            romulus.agent_end(-100)
-            # Terminate episode if the end effector is outside of the action range
-            break
-        # If all the particles are outside the hand cup
+
         
         # Check particle status for terminal conditions
-        is_terminal,is_success = check_particle_terminal(particles) 
+        is_terminal,is_success, g_count = check_particle_terminal(particles) 
+
+        # Update p_in_goal 
+        if p_in_goal > g_count:
+            p_in_goal = g_count
         # There is a terminal condition then
         if (is_terminal):
             # Check if the agent scored all particles
@@ -122,6 +122,14 @@ for episode in range(n_episodes):
                 streaks = 0
             break
 
+        # If within action range
+        if state < 0 or state > 180:
+            # Give proportional penalty to the agent for going out of action range
+            # Consider all particles outside of goal, as lost and give appropriate reward
+            romulus.agent_end(-100*(n_particles-g_count))
+            # Terminate episode if the end effector is outside of the action range
+            break
+        # If all the particles are outside the hand cup
 
         # 3.- Reward calculations
         # Check particle states   
@@ -140,10 +148,12 @@ for episode in range(n_episodes):
     
     # Print episode data
     print_episode_data(episode,max_streaks)
+    # Add particles in goal 
+    p_reached_per_episode[episode]= p_in_goal
     # Add last episode reward sum to the reward curve
-    reward_curve.append(reward_sum)
+    reward_curve[episode] = reward_sum
     # Add max number of streaks in episode to streak curve
-    max_streak_curve.append(max_streaks)
+    max_streak_curve[episode] = max_streaks
     # ----------------
     # Episode Loop end
     # ----------------
@@ -152,7 +162,10 @@ for episode in range(n_episodes):
 # Training loop end
 # -----------------
     
-
+# Save data
+np.save("p_reached_per_episode", p_reached_per_episode)
+np.save("reward_curve",reward_curve)
+np.save("max_streak_curve",max_streak_curve)
 # -----------------------
 # Statistics and graphics
 # -----------------------

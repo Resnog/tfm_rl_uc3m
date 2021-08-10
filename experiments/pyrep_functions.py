@@ -135,7 +135,7 @@ def check_particle_terminal(particles):
         if count == g_count:
             success = True
 
-    return terminal, success
+    return terminal, success, g_count
 
 def print_episode_data(episode_number, streaks):
 
@@ -143,7 +143,8 @@ def print_episode_data(episode_number, streaks):
     print("Episode number: {}".format(episode_number))
     print("Streaks:        {}".format(streaks))
     print("------------------------")
-    pass
+    
+    
 # COLOR VARIABLES
 YELLOW = [205,205,0]
 GREEN = [0,139,0]
