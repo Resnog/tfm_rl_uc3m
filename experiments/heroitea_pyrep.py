@@ -1,5 +1,4 @@
-from experiments.agent import agent_ql
-from agent import agent
+from agent import agent_ql
 from numpy.core.numeric import zeros_like
 from pyrep import PyRep
 from time import sleep
