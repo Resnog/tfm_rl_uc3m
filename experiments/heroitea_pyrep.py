@@ -1,4 +1,4 @@
-from agent import agent_ql
+from agent import agentQL
 from numpy.core.numeric import zeros_like
 from pyrep import PyRep
 from time import sleep
@@ -33,10 +33,10 @@ as in the founder of Rome, the first Roman king of the Roman Kingdom, in the pre
 # ------------
 # Init training
 # ------------
-romulus = agent_ql(agent_init) # Agent declaration
-n_episodes = 500            # Episode number
+romulus = agentQL(agent_init) # Agent declaration
+n_episodes = 100            # Episode number
 episode_len = 1500           # Episode length
-n_particles = 500            # Particle number
+n_particles = 275            # Particle number
 particle_type = liquids  # Particle type (liquids, small solids, big solids)
 reward_curve = np.zeros(n_episodes)           # Curve to plot the reward per episode
 max_streak_curve = np.zeros(n_episodes)       # Maximum number of streaks per episode
@@ -83,11 +83,13 @@ for episode in range(n_episodes):
     max_streaks = 0
     # Number of particles that reached the destination in the episode
     p_in_goal = 0
+    
     # ------------
     # Episode Loop
     # ------------
-    # Each episode has 500 steps at 25ms the step, so 12.5s in total
-    for i in range(episode_len): 
+    # Loop until a terminal condition is met, terminal conditions are evaluated at the start of each episode
+    # ergo, while True
+    while True: 
 
 
         # Here we make the agent do stuff in each episode
@@ -162,9 +164,10 @@ for episode in range(n_episodes):
 # -----------------
     
 # Save data
-np.save("p_reached_per_episode", p_reached_per_episode)
-np.save("reward_curve",reward_curve)
-np.save("max_streak_curve",max_streak_curve)
+np.save("/results/agent_ql_table",romulus.q_values)
+np.save("/results/p_reached_per_episode", p_reached_per_episode)
+np.save("/results/reward_curve",reward_curve)
+np.save("/results/max_streak_curve",max_streak_curve)
 # -----------------------
 # Statistics and graphics
 # -----------------------

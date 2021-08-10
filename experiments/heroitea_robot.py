@@ -12,7 +12,8 @@ class Heroitea(object):
 
         # Get the current angle of the end effector and convert it to an int variable
         pose = np.rint(np.rad2deg( self.left_arm.get_joint_positions() ) )
-        return int(pose[5]) - 15
+        # Substract 30 so that the effector can only cage 15 degrees to the wrong position
+        return int(pose[5]) - 30
 
     def set_train_position(self, pr):
         """

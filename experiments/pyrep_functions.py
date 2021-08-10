@@ -89,14 +89,14 @@ def calculate_rewards(particles, par_visit):
             # If the particle is inside the glass
             if particles[i].get_color() == GREEN:
                 # Give reward
-                reward += 10
+                reward += 100
                 # Set status of the particle as "visited"
                 par_visit[i] = True
                 count += 1
             # If the particle is lost 
             elif particles[i].get_color() == RED:
                 # Give penalty
-                reward -= 10
+                reward -= 100
                 # Set status of the particle as "visited"
                 par_visit[i] = True
                 # Add particle to visited count
@@ -107,7 +107,7 @@ def calculate_rewards(particles, par_visit):
                 pass
 
     if count == 0:
-        reward = -1
+        reward = -10
 
     return reward
 

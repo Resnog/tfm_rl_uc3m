@@ -1,6 +1,6 @@
 import numpy as np
 
-class agent_ql():
+class agentQL():
 
 
     def __init__(self, agent_init):
