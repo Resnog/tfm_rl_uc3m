@@ -3,8 +3,8 @@ import numpy as np
 
 class Heroitea(object):
     def __init__(self):
-        self.left_arm = arm.Arm(0, "UR3_left", 6, max_velocity=1)
-        self.right_arm = arm.Arm(0, "UR3_right", 6, max_velocity=1)
+        self.left_arm = arm.Arm(0, "UR3_left", 6)
+        self.right_arm = arm.Arm(0, "UR3_right", 6)
         self.init_arm_pose = [-70,-100,-30,45,45,45]    
         self.train_arm_pose = self.init_arm_pose
       
@@ -24,6 +24,7 @@ class Heroitea(object):
         arm_pose = np.deg2rad(self.init_arm_pose)
         # Set arm pose 
         self.left_arm.set_joint_target_positions(arm_pose)
+        self.left_arm.set_joint_target_velocities([0,0,0,0,0,0])
         # Wait for arm to reach train position
         pr.step()
         

@@ -1,5 +1,6 @@
 from agent import agentQL
 from numpy.core.numeric import zeros_like
+from numpy.lib.npyio import save
 from pyrep import PyRep
 from time import sleep
 from pyrep_functions import *
@@ -12,7 +13,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # Init COPSIM
-scene_path = "/home/greatceph/myRepos/tfm_rl_uc3m/scenes/heroitea_pyrep.ttt"
+main_path = "/home/greatceph/myRepos/tfm_rl_uc3m/"
+scene_path = main_path + "scenes/heroitea_pyrep.ttt"
+save_path = save_path = main_path + "experiments/results/"
+
 pr = PyRep()                            
 pr.launch(scene_path,headless=False) # Run COPSIM
 
@@ -33,14 +37,14 @@ as in the founder of Rome, the first Roman king of the Roman Kingdom, in the pre
 # ------------
 # Init training
 # ------------
-romulus = agentQL(agent_init) # Agent declaration
-n_episodes = 100            # Episode number
-episode_len = 1500           # Episode length
-n_particles = 275            # Particle number
-particle_type = liquids  # Particle type (liquids, small solids, big solids)
-reward_curve = np.zeros(n_episodes)           # Curve to plot the reward per episode
-max_streak_curve = np.zeros(n_episodes)       # Maximum number of streaks per episode
-p_reached_per_episode = np.zeros(n_episodes)  # Number of particles that reached the destination in each episode
+romulus = agentQL(agent_init)                   # Agent declaration
+n_episodes = 100                                # Episode number
+episode_len = 1500                              # Episode length
+n_particles = 275                               # Particle number
+particle_type = liquids                         # Particle type (liquids, small solids, big solids)
+reward_curve = np.zeros(n_episodes)             # Curve to plot the reward per episode
+max_streak_curve = np.zeros(n_episodes)         # Maximum number of streaks per episode
+p_reached_per_episode = np.zeros(n_episodes)    # Number of particles that reached the destination in each episode
 # -------------
 # Training loop
 # -------------
@@ -164,10 +168,10 @@ for episode in range(n_episodes):
 # -----------------
     
 # Save data
-np.save("/results/agent_ql_table",romulus.q_values)
-np.save("/results/p_reached_per_episode", p_reached_per_episode)
-np.save("/results/reward_curve",reward_curve)
-np.save("/results/max_streak_curve",max_streak_curve)
+np.save(save_path + "agent_ql_values",          romulus.q_values)
+np.save(save_path + "p_reached_per_episode",    p_reached_per_episode)
+np.save(save_path + "reward_curve",             reward_curve)
+np.save(save_path + "max_streak_curve",         max_streak_curve)
 # -----------------------
 # Statistics and graphics
 # -----------------------
