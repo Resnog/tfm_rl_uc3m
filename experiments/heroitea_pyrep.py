@@ -25,7 +25,7 @@ agent_init = {
     "n_states":180,     # For each degree the agent will have one state
     "n_actions":3,      # The agent will only move right, left or not move at all
     "epsilon" : 0.015,  # e-greedy epsilon value
-    "discount" : 0.01,  # Discount constante
+    "discount" : 0.85,  # Discount constante
     "step_size" : 0.015,# Steep size
     "seed": None        # Take random seed from clock
 }
@@ -33,7 +33,7 @@ agent_init = {
     Since this is the start of the RL development on Heroitea, the agent will be name Romulus,
 as in the founder of Rome, the first Roman king of the Roman Kingdom, in the pre-Republican era.
 """
-
+ 
 # ------------
 # Init training
 # ------------
@@ -87,14 +87,14 @@ for episode in range(n_episodes):
     max_streaks = 0
     # Number of particles that reached the destination in the episode
     p_in_goal = 0
-    
+    # Print episode data
+    print_episode_data(episode,max_streaks)
     # ------------
     # Episode Loop
-    # ------------
-    # Loop until a terminal condition is met, terminal conditions are evaluated at the start of each episode
-    # ergo, while True
-    while True: 
-
+    # ------------    
+    # Each step in the simulation are 25ms, with 1500 timesteps we have  
+    # 37.5s of simulation for each episode
+    for i in range(1,episode_len): 
 
         # Here we make the agent do stuff in each episode
         # 1.- Make observation of the environment
@@ -151,8 +151,6 @@ for episode in range(n_episodes):
     # Once the episode ends, stop simulation
     pr.stop()
     
-    # Print episode data
-    print_episode_data(episode,max_streaks)
     # Add particles in goal 
     p_reached_per_episode[episode]= p_in_goal
     # Add last episode reward sum to the reward curve

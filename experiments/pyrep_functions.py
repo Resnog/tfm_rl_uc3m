@@ -4,6 +4,7 @@ from pyrep.const import PrimitiveShape
 from pyrep.objects.shape import Shape, Object
 from pyrep.objects.proximity_sensor import ProximitySensor
 import numpy as np 
+import datetime 
 
 def fill_cup(hand_cup, n_particles, particle_type, pr):
 
@@ -142,6 +143,7 @@ def print_episode_data(episode_number, streaks):
     print("------------------------")
     print("Episode number: {}".format(episode_number))
     print("Streaks:        {}".format(streaks))
+    print("Time:           {}".format(datetime.datetime.now()))
     print("------------------------")
     
     
