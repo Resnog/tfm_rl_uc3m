@@ -1,4 +1,4 @@
-from agent import agentQL
+from agent import *
 from numpy.core.numeric import zeros_like
 from numpy.lib.npyio import save
 from pyrep import PyRep
@@ -11,6 +11,7 @@ from pyrep.objects.shape import Shape, Object
 from pyrep.objects.proximity_sensor import ProximitySensor
 import numpy as np
 import matplotlib.pyplot as plt
+import datetime
 
 # Init COPSIM
 main_path = "/home/greatceph/myRepos/tfm_rl_uc3m/"
@@ -22,12 +23,13 @@ pr.launch(scene_path,headless=False) # Run COPSIM
 
 # Init Agent to control the robot
 agent_init = {
-    "n_states":180,     # For each degree the agent will have one state
-    "n_actions":3,      # The agent will only move right, left or not move at all
-    "epsilon" : 0.015,  # e-greedy epsilon value
-    "discount" : 0.85,  # Discount constante
-    "step_size" : 0.015,# Steep size
-    "seed": None        # Take random seed from clock
+    "n_states":160,         # For each degree the agent will have one state
+    "n_actions":3,          # The agent will only move right, left or not move at all
+    "epsilon" : 0.03,       # e-greedy epsilon value
+    "discount" : 0.9,       # Discount constante
+    "step_size" : 0.02,     # Steep size
+    "seed": None     ,      # Take random seed from clock
+    "planning_steps": 50    # Planning steps for the DynaQ agent
 }
 """
     Since this is the start of the RL development on Heroitea, the agent will be name Romulus,
@@ -37,18 +39,20 @@ as in the founder of Rome, the first Roman king of the Roman Kingdom, in the pre
 # ------------
 # Init training
 # ------------
-romulus = agentQL(agent_init)                   # Agent declaration
+romulus = agentDynaQ(agent_init)                # Agent declaration
 n_episodes = 100                                # Episode number
-episode_len = 1500                              # Episode length
-n_particles = 275                               # Particle number
-particle_type = liquids                         # Particle type (liquids, small solids, big solids)
+episode_len = 2000                              # Episode length
+n_particles = 20                               # Particle number
+particle_type = big_solids                      # Particle type (liquids, small solids, big solids)
 reward_curve = np.zeros(n_episodes)             # Curve to plot the reward per episode
 max_streak_curve = np.zeros(n_episodes)         # Maximum number of streaks per episode
 p_reached_per_episode = np.zeros(n_episodes)    # Number of particles that reached the destination in each episode
+
+
 # -------------
 # Training loop
 # -------------
-for episode in range(n_episodes):
+for episode in range(1,n_episodes):
 
     # ------------
     # Init episode
@@ -87,15 +91,20 @@ for episode in range(n_episodes):
     max_streaks = 0
     # Number of particles that reached the destination in the episode
     p_in_goal = 0
-    # Print episode data
-    print_episode_data(episode,max_streaks)
+
+    print("------------------------")
+    print("Episode {}".format(episode))
+    print("------------------------")
     # ------------
     # Episode Loop
     # ------------    
+    # TIME LIMITED
     # Each step in the simulation are 25ms, with 1500 timesteps we have  
     # 37.5s of simulation for each episode
     for i in range(1,episode_len): 
 
+    # TIME UNLIMITED
+    #while True:
         # Here we make the agent do stuff in each episode
         # 1.- Make observation of the environment
         state = heroitea.get_end_effector_state()
@@ -109,12 +118,14 @@ for episode in range(n_episodes):
         is_terminal,is_success, g_count = check_particle_terminal(particles) 
 
         # Update p_in_goal 
-        if p_in_goal > g_count:
+        if p_in_goal < g_count:
             p_in_goal = g_count
         # There is a terminal condition then
         if (is_terminal):
             # Check if the agent scored all particles
             if(is_success):
+                # Give goof reward
+                romulus.agent_end(1000)
                 # Add one to streak count
                 streaks += 1
                 # Check if current number of streaks is greater than current max number of streaks
@@ -125,13 +136,14 @@ for episode in range(n_episodes):
             else:
                 # Reset streak count
                 streaks = 0
+            romulus.agent_end( (g_count)*(100))
             break
 
         # If within action range
         if state < 0 or state > 180:
             # Give proportional penalty to the agent for going out of action range
             # Consider all particles outside of goal, as lost and give appropriate reward
-            romulus.agent_end(-100*(n_particles-g_count))
+            romulus.agent_end(-1000)
             # Terminate episode if the end effector is outside of the action range
             break
         # If all the particles are outside the hand cup
@@ -150,7 +162,10 @@ for episode in range(n_episodes):
         pr.step()
     # Once the episode ends, stop simulation
     pr.stop()
-    
+    # Print episode data
+    print_episode_data(episode,max_streaks, p_in_goal, n_particles)
+    # Write to logfile
+    #write_logfile(logfile,episode,max_streaks,p_in_goal, n_particles)
     # Add particles in goal 
     p_reached_per_episode[episode]= p_in_goal
     # Add last episode reward sum to the reward curve
@@ -166,10 +181,10 @@ for episode in range(n_episodes):
 # -----------------
     
 # Save data
-np.save(save_path + "agent_ql_values",          romulus.q_values)
-np.save(save_path + "p_reached_per_episode",    p_reached_per_episode)
-np.save(save_path + "reward_curve",             reward_curve)
-np.save(save_path + "max_streak_curve",         max_streak_curve)
+np.save(save_path + "first/" + "agent_ql_values",          romulus.q)
+np.save(save_path + "first/" + "p_reached_per_episode",    p_reached_per_episode)
+np.save(save_path + "first/" + "reward_curve",             reward_curve)
+np.save(save_path + "first/" + "max_streak_curve",         max_streak_curve)
 # -----------------------
 # Statistics and graphics
 # -----------------------
@@ -177,7 +192,7 @@ np.save(save_path + "max_streak_curve",         max_streak_curve)
 plt.plot(reward_curve)
 plt.ylabel("Sumatoria de recompensas por episodio")
 plt.xlabel("Episodios")
-plt.savefig("reward_sum_curve.png")
+plt.savefig( save_path + "first/" +"reward_sum_curve.png")
 plt.show()
 
 pr.shutdown()   # Close COPSIM

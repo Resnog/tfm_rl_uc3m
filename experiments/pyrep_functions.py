@@ -1,4 +1,5 @@
 import os
+from numpy.core.arrayprint import DatetimeFormat
 import pyrep
 from pyrep.const import PrimitiveShape
 from pyrep.objects.shape import Shape, Object
@@ -108,8 +109,7 @@ def calculate_rewards(particles, par_visit):
                 pass
 
     if count == 0:
-        reward = -10
-
+        reward = -1
     return reward
 
 def check_particle_terminal(particles):
@@ -124,9 +124,9 @@ def check_particle_terminal(particles):
         # If the particle is either lost or reached their destination        
         if p.get_color() != YELLOW:
             count += 1
-        # If the particle is GREEN
-        elif p.get_color() == GREEN:
-            g_count += 1
+            # If the particle is GREEN
+            if p.get_color() == GREEN:
+                g_count += 1
 
     # If all the particles are either lost or reached their destination 
     if count == len(particles):
@@ -138,15 +138,35 @@ def check_particle_terminal(particles):
 
     return terminal, success, g_count
 
-def print_episode_data(episode_number, streaks):
+def print_episode_data(episode_number, streaks,p_in_goal, p_num):
 
     print("------------------------")
     print("Episode number: {}".format(episode_number))
     print("Streaks:        {}".format(streaks))
     print("Time:           {}".format(datetime.datetime.now()))
+    print("Particles in:   {}/{}".format(p_in_goal,p_num))
     print("------------------------")
-    
-    
+"""   
+DEPREcEATED FUNCTIONS
+
+def init_logfile(logfile_name):
+    with open(logfile_name, "w") as f:
+        f.write("{}".format(datetime.datetime.now()))
+        print("Created logfile with timestamp".format(datetime.datetime.now()) )
+        f.close()
+
+def write_logfile(logfile,episode_number, streaks, p_in_goal, p_num):
+
+     with open(logfile, "w") as f:
+        f.write("------------------------"+"\n")
+        f.write("Episode number: {}".format(episode_number)+"\n")
+        f.write("Streaks:        {}".format(streaks)+"\n")
+        f.write("Time:           {}".format(datetime.datetime.now())+"\n")
+        f.write("Particles in:   {}/{}".format(p_in_goal,p_num)+"\n")
+        f.write("------------------------"+"\n")
+        f.close()
+"""
+
 # COLOR VARIABLES
 YELLOW = [205,205,0]
 GREEN = [0,139,0]
@@ -159,3 +179,8 @@ liquids = (0.0045,0.008)
 small_solids = (0.009,0.012)
 
 big_solids = (0.018,0.024)
+# Rewards
+
+reward = {  "X": -1,
+            "Y": 100,
+            "Z": 1500}
