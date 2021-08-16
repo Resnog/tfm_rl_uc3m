@@ -38,7 +38,7 @@ as in the founder of Rome, the first Roman king of the Roman Kingdom, in the pre
 # ------------
 # Init training
 # ------------
-romulus = agentExpectedSarsa(agent_init)                   # Agent declaration
+romulus = agentQL(agent_init)                   # Agent declaration
 n_episodes = 100                                # Episode number
 episode_len = 2000                              # Episode length
 n_particles = 275                               # Particle number

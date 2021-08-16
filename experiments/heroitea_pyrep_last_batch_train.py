@@ -40,11 +40,11 @@ as in the founder of Rome, the first Roman king of the Roman Kingdom, in the pre
 # ------------
 # Init training
 # ------------
-romulus = agentExpectedSarsa(agent_init)        # Agent declaration
+romulus = agentQL(agent_init)                   # Agent declaration
 n_episodes = 100                                # Episode number
 episode_len = 2000                              # Episode length
-n_particles = 20                               # Particle number
-particle_type = big_solids                      # Particle type (liquids, small solids, big solids)
+n_particles = 275                               # Particle number
+particle_type = liquids                         # Particle type (liquids, small solids, big solids)
 reward_curve = np.zeros(n_episodes)             # Curve to plot the reward per episode
 max_streak_curve = np.zeros(n_episodes)         # Maximum number of streaks per episode
 p_reached_per_episode = np.zeros(n_episodes)    # Number of particles that reached the destination in each episode
@@ -53,8 +53,7 @@ p_reached_per_episode = np.zeros(n_episodes)    # Number of particles that reach
 # Load agent's q_table
 #----------------------
 saved_q_table = np.load(save_path + "second/" +"new_agent_ql_values.npy")
-romulus.q_values = saved_q_table
-
+romulus.q = saved_q_table
 # -------------
 # Training loop
 # -------------
@@ -187,7 +186,7 @@ for episode in range(1,n_episodes):
 # -----------------
     
 # Save data
-np.save(save_path + "third/" + "agent_ql_values",          romulus.q_values)
+np.save(save_path + "third/" + "agent_ql_values",          romulus.q)
 np.save(save_path + "third/" + "p_reached_per_episode",    p_reached_per_episode)
 np.save(save_path + "third/" + "reward_curve",             reward_curve)
 np.save(save_path + "third/" + "max_streak_curve",         max_streak_curve)

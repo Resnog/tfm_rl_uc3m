@@ -39,11 +39,11 @@ as in the founder of Rome, the first Roman king of the Roman Kingdom, in the pre
 # ------------
 # Init training
 # ------------
-romulus = agentDynaQ(agent_init)                # Agent declaration
+romulus = agentQL(agent_init)                # Agent declaration
 n_episodes = 100                                # Episode number
 episode_len = 2000                              # Episode length
-n_particles = 20                               # Particle number
-particle_type = big_solids                      # Particle type (liquids, small solids, big solids)
+n_particles = 275                               # Particle number
+particle_type = liquids                         # Particle type (liquids, small solids, big solids)
 reward_curve = np.zeros(n_episodes)             # Curve to plot the reward per episode
 max_streak_curve = np.zeros(n_episodes)         # Maximum number of streaks per episode
 p_reached_per_episode = np.zeros(n_episodes)    # Number of particles that reached the destination in each episode
@@ -103,8 +103,6 @@ for episode in range(1,n_episodes):
     # 37.5s of simulation for each episode
     for i in range(1,episode_len): 
 
-    # TIME UNLIMITED
-    #while True:
         # Here we make the agent do stuff in each episode
         # 1.- Make observation of the environment
         state = heroitea.get_end_effector_state()
