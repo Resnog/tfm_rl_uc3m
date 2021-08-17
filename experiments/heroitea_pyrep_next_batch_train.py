@@ -189,10 +189,10 @@ for episode in range(1,n_episodes):
 # -----------------
     
 # Save data
-np.save(save_path + "second/" + "new_agent_ql_values",          romulus.q)
-np.save(save_path + "second/" + "new_p_reached_per_episode",    p_reached_per_episode)
-np.save(save_path + "second/" + "new_reward_curve",             reward_curve)
-np.save(save_path + "second/" +"new_max_streak_curve",         max_streak_curve)
+np.save(save_path + "second/" + "agent_ql_values",          romulus.q)
+np.save(save_path + "second/" + "p_reached_per_episode",    p_reached_per_episode)
+np.save(save_path + "second/" + "reward_curve",             reward_curve)
+np.save(save_path + "second/" +"max_streak_curve",         max_streak_curve)
 # -----------------------
 # Statistics and graphics
 # -----------------------

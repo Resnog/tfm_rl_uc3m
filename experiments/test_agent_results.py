@@ -1,4 +1,4 @@
-from agent import agentDynaQ, agentQL
+from agent import agentDynaQ, agentExpectedSarsa, agentQL
 from numpy.core.numeric import zeros_like
 from numpy.lib.npyio import save
 from pyrep import PyRep
