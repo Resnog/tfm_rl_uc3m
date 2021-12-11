@@ -16,6 +16,14 @@ The metric used in the case was the number of particles that reached the goal de
 
 The RL agent was designed with multiple agent testing, you can download the code, add a new agent class and begin having fun.
 
+The main algorithms tested in this project were some classics:
+
++  Q-Learning.
++  Expected SARSA.
++  Dyna-Q.
+
+Each algorithm's was tested with each particle type.
+
 #### More to come
 
 When I have my Ubuntu machine with me, I'll organize properly the code since it can be a little tedious to work with initially.
